@@ -1,10 +1,3 @@
-// ======================================================
-// DNCC RMS - COMPLETE LOGIN & DASHBOARD MENU TESTING
-// Total Modules: 6
-// Total Submenu Pages: 43
-// ======================================================
-
-
 // Ignore known application JavaScript errors
 Cypress.on("uncaught:exception", (err) => {
 
@@ -799,112 +792,7 @@ describe("DNCC RMS - Complete Login & Dashboard Menu Testing", () => {
 
 
     // ==================================================
-    // STEP 20: NOTICE MENU
-    // ==================================================
-
-    const noticePages = [
-
-      {
-        name: "বিল প্রিন্ট সেটিং",
-        url: "/newv/web/BillPrintSetting.aspx"
-      },
-
-      {
-        name: "নোটিশ সমূহ",
-        url: "/newv/web/rpt_taxCompletionNotice.aspx"
-      },
-
-      {
-        name: "বকেয়া বিল প্রিন্ট নোটিশ",
-        url: "/newv/web/rpt_taxCompletionNotice_noofdues.aspx"
-      }
-
-    ];
-
-
-    cy.log("===== NOTICE MENU TESTING STARTED =====");
-
-
-    // Open Notice Menu
-    cy.contains("a.has-submenu-toggle", "নোটিশ")
-      .should("be.visible")
-      .click();
-
-
-    // Verify Notice Submenu
-    cy.contains("a.has-submenu-toggle", "নোটিশ")
-      .closest("li.nav-item")
-      .find("ul.nav-submenu")
-      .should("be.visible");
-
-
-    // Visit each Notice page
-    cy.wrap(noticePages).each((page) => {
-
-      cy.log(`Visiting Notice: ${page.name}`);
-
-
-      // Exact text matching
-      cy.get("ul.nav-submenu a")
-        .filter((index, element) => {
-
-          return element.innerText.trim() === page.name;
-
-        })
-        .should("have.length", 1)
-        .and("be.visible")
-        .click();
-
-
-      // Verify URL
-      const expectedPath = page.url
-        .split("?")[0]
-        .replace(".aspx", "");
-
-
-      cy.location("pathname", {
-        timeout: 30000
-      }).should("include", expectedPath);
-
-
-      // Verify page loading
-      cy.document()
-        .its("readyState")
-        .should("eq", "complete");
-
-
-      cy.log(`SUCCESS: ${page.name}`);
-
-
-      // Return to Dashboard
-      cy.visit("/newv/web/homenew_ver2.aspx");
-
-
-      cy.location("pathname", {
-        timeout: 30000
-      }).should("include", "homenew_ver2");
-
-
-      // Open Notice Menu again
-      cy.contains("a.has-submenu-toggle", "নোটিশ")
-        .should("be.visible")
-        .click();
-
-
-      cy.contains("a.has-submenu-toggle", "নোটিশ")
-        .closest("li.nav-item")
-        .find("ul.nav-submenu")
-        .should("be.visible");
-
-    });
-
-
-    cy.log("===== ALL NOTICE PAGES TESTED =====");
-
-
-
-    // ==================================================
-    // STEP 21: REPORT MENU
+    // STEP 20: REPORT MENU
     // ==================================================
 
     const reportPages = [
@@ -1050,6 +938,111 @@ describe("DNCC RMS - Complete Login & Dashboard Menu Testing", () => {
 
 
     cy.log("===== ALL REPORT PAGES TESTED =====");
+
+
+    // ==================================================
+    // STEP 21: NOTICE MENU
+    // ==================================================
+
+    const noticePages = [
+
+      {
+        name: "বিল প্রিন্ট সেটিং",
+        url: "/newv/web/BillPrintSetting.aspx"
+      },
+
+      {
+        name: "নোটিশ সমূহ",
+        url: "/newv/web/rpt_taxCompletionNotice.aspx"
+      },
+
+      {
+        name: "বকেয়া বিল প্রিন্ট নোটিশ",
+        url: "/newv/web/rpt_taxCompletionNotice_noofdues.aspx"
+      }
+
+    ];
+
+
+    cy.log("===== NOTICE MENU TESTING STARTED =====");
+
+
+    // Open Notice Menu
+    cy.contains("a.has-submenu-toggle", "নোটিশ")
+      .should("be.visible")
+      .click();
+
+
+    // Verify Notice Submenu
+    cy.contains("a.has-submenu-toggle", "নোটিশ")
+      .closest("li.nav-item")
+      .find("ul.nav-submenu")
+      .should("be.visible");
+
+
+    // Visit each Notice page
+    cy.wrap(noticePages).each((page) => {
+
+      cy.log(`Visiting Notice: ${page.name}`);
+
+
+      // Exact text matching
+      cy.get("ul.nav-submenu a")
+        .filter((index, element) => {
+
+          return element.innerText.trim() === page.name;
+
+        })
+        .should("have.length", 1)
+        .and("be.visible")
+        .click();
+
+
+      // Verify URL
+      const expectedPath = page.url
+        .split("?")[0]
+        .replace(".aspx", "");
+
+
+      cy.location("pathname", {
+        timeout: 30000
+      }).should("include", expectedPath);
+
+
+      // Verify page loading
+      cy.document()
+        .its("readyState")
+        .should("eq", "complete");
+
+
+      cy.log(`SUCCESS: ${page.name}`);
+
+
+      // Return to Dashboard
+      cy.visit("/newv/web/homenew_ver2.aspx");
+
+
+      cy.location("pathname", {
+        timeout: 30000
+      }).should("include", "homenew_ver2");
+
+
+      // Open Notice Menu again
+      cy.contains("a.has-submenu-toggle", "নোটিশ")
+        .should("be.visible")
+        .click();
+
+
+      cy.contains("a.has-submenu-toggle", "নোটিশ")
+        .closest("li.nav-item")
+        .find("ul.nav-submenu")
+        .should("be.visible");
+
+    });
+
+
+    cy.log("===== ALL NOTICE PAGES TESTED =====");
+
 
 
 
