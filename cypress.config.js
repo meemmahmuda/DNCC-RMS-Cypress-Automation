@@ -1,4 +1,3 @@
-
 const { defineConfig } = require("cypress");
 
 module.exports = defineConfig({
@@ -30,7 +29,8 @@ module.exports = defineConfig({
         getCredentials() {
           return {
             username: process.env.CYPRESS_USERNAME,
-            password: process.env.CYPRESS_PASSWORD
+            password: process.env.CYPRESS_PASSWORD,
+            otp: process.env.CYPRESS_OTP || "070210"
           };
         }
       });
@@ -43,6 +43,7 @@ module.exports = defineConfig({
 
 // $env:CYPRESS_USERNAME="YOUR_USERNAME"
 // $env:CYPRESS_PASSWORD="YOUR_PASSWORD"
+// $env:CYPRESS_OTP="070210"   (optional, na dile default 070210 use hobe)
 
 // npx cypress open
 // npx cypress run

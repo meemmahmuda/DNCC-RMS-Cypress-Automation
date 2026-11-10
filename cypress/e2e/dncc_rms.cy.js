@@ -132,40 +132,25 @@ describe("DNCC RMS - Complete Login & Dashboard Menu Testing", () => {
 
 
     // ==================================================
-    // STEP 9: ENTER OTP MANUALLY
+    // STEP 9: ENTER FIXED OTP
     // ==================================================
 
-    cy.window().then((win) => {
+    const otp = "070210";
 
-      const otp = win.prompt("Enter your 6-digit OTP:");
-
-      if (!otp || !/^\d{6}$/.test(otp.trim())) {
-
-        throw new Error("Invalid OTP");
-
-      }
-
-      return otp.trim();
-
-    }).then((otp) => {
-
-      cy.get('input[name="txtOTP"]')
-        .should("be.visible")
-        .type(otp, {
-          log: false
-        });
+    cy.get('input[name="txtOTP"]')
+      .should("be.visible")
+      .type(otp, {
+        log: false
+      });
 
 
-      // ================================================
-      // STEP 10: SUBMIT OTP
-      // ================================================
+    // ==================================================
+    // STEP 10: SUBMIT OTP
+    // ==================================================
 
-      cy.get('input[name="btnSubmit"]')
-        .should("be.visible")
-        .click();
-
-    });
-
+    cy.get('input[name="btnSubmit"]')
+      .should("be.visible")
+      .click();
 
     // ==================================================
     // STEP 11: VERIFY DASHBOARD
