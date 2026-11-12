@@ -19,7 +19,7 @@ Cypress.on("uncaught:exception", (err) => {
 });
 
 
-describe("DNCC RMS - Complete Login & Dashboard Menu Testing", () => {
+describe("DNCC RMS Holding Tax - Complete Login & Dashboard Menu Testing", () => {
 
   let credentials;
 
@@ -1028,11 +1028,45 @@ describe("DNCC RMS - Complete Login & Dashboard Menu Testing", () => {
 
     cy.log("===== ALL NOTICE PAGES TESTED =====");
 
+    // ==================================================
+    // STEP 22: LOGOUT AND VERIFY LOGIN PAGE
+    // ==================================================
+
+    cy.log("===== LOGOUT TESTING STARTED =====");
+
+    // Find and click Logout link
+    cy.get('a.nav-link[href="logout.aspx"]')
+      .should("be.visible")
+      .click();
+
+    // Verify redirect to Login Page
+    cy.location("pathname", {
+      timeout: 30000
+    }).should("match", /default/i);
+
+    // Verify Login Form
+    cy.get('input[name="txtLogin"]', {
+      timeout: 30000
+    }).should("be.visible");
+
+    cy.get('input[name="txtPwd"]')
+      .should("be.visible");
+
+    // Final Logout Verification
+    cy.log("Logout: SUCCESS");
+
+    cy.log("Login Page Redirect: SUCCESS");
+
+    cy.log("Login Form Verification: SUCCESS");
+
+    cy.log("===== LOGOUT TESTING COMPLETED =====");
+
+    cy.log("========== ALL TESTING COMPLETED ==========");
 
 
 
     // ==================================================
-    // STEP 22: FINAL TEST SUMMARY
+    // STEP 23: FINAL TEST SUMMARY
     // ==================================================
 
     cy.log("========== FINAL TEST SUMMARY ==========");
