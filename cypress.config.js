@@ -43,7 +43,7 @@ module.exports = defineConfig({
 
 // $env:CYPRESS_USERNAME="YOUR_USERNAME"
 // $env:CYPRESS_PASSWORD="YOUR_PASSWORD"
-// $env:CYPRESS_OTP="070210"   (optional, na dile default 070210 use hobe)
+// $env:CYPRESS_OTP="070210"   
 
 // npx cypress open
 // npx cypress run
