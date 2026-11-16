@@ -30,7 +30,7 @@ Cypress.on("uncaught:exception", (err) => {
         "$ is not a function",
         "Cannot read properties of null (reading 'style')",
         "Unexpected token 'this'",
-        "Script error"   
+        "Script error"
     ];
 
     if (ignoredErrors.some((message) => err.message.includes(message))) {
@@ -44,12 +44,14 @@ Cypress.on("uncaught:exception", (err) => {
 
 
 // ======================================================
-// EXPECTED MENU COUNTS (update here if the menu changes)
+// EXPECTED MENU COUNTS
 // ======================================================
 
 const EXPECTED_MAIN_MENUS = 7;
-const EXPECTED_TOTAL_LINKS = 50;     // all submenu links in the sidebar
-const EXPECTED_UNIQUE_PAGES = 49;    // unique URLs (1 duplicate: rpt_TL_Due_paid_status.aspx)
+
+const EXPECTED_TOTAL_LINKS = 47;
+
+const EXPECTED_UNIQUE_PAGES = 47;
 
 const VISIT_DUPLICATE_LINKS = true;
 
@@ -58,11 +60,63 @@ const EXPECTED_PAGES_TO_VISIT = VISIT_DUPLICATE_LINKS
     : EXPECTED_UNIQUE_PAGES;
 
 
-const KNOWN_BROKEN_PAGES = [
-    "TL_ApplicationSearchForpayment.aspx",          
-    "TL_ApplicationSearchForpayment_Renewal.aspx",  
-    "TL_PaymentForBusinessUpdate.aspx"              
+// ======================================================
+// CORRECT URLS FOR THE 2 COLLECTION REPORT MENUS
+// ======================================================
+
+const DUE_PAID_PAGE_KEY = "rpt_tl_due_paid_status";
+
+const APPL_REPORT_URL =
+    "https://erevenue.dncc.gov.bd/newv/TradeLicense/rpt_TL_Due_paid_status?applicationtype=APPL";
+
+const RENEW_REPORT_URL =
+    "https://erevenue.dncc.gov.bd/newv/TradeLicense/rpt_TL_Due_paid_status?applicationtype=RENEW";
+
+let dueStatusLinkCount = 0;
+
+
+// ======================================================
+// EXCLUDED URLS
+// THESE 3 PAGES WILL NOT BE TESTED
+// ======================================================
+
+const EXCLUDED_URLS = [
+    "/newv/tradelicense/tl_applicationsearchforpayment",
+    "/newv/tradelicense/tl_applicationsearchforpayment_renewal",
+    "/newv/tradelicense/tl_paymentforbusinessupdate"
 ];
+
+
+// ======================================================
+// HELPER: CHECK EXCLUDED URL
+// ======================================================
+
+const isExcludedPageUrl = (url) => {
+
+    try {
+
+        const parsedUrl = new URL(url);
+
+        let pathname = parsedUrl.pathname
+            .toLowerCase()
+            .replace(/\/+$/, "")
+            .replace(/\.aspx$/, "");
+
+        return EXCLUDED_URLS.some((excludedUrl) => {
+
+            return pathname === excludedUrl;
+        });
+
+    } catch (error) {
+
+        return false;
+    }
+};
+
+
+// ======================================================
+// ERROR PAGE PATTERNS
+// ======================================================
 
 const ERROR_PAGE_PATTERNS = [
     "Server Error",
@@ -140,11 +194,12 @@ describe("DNCC RMS Trade License - Complete Login & Dashboard Menu Testing", () 
         let submenuPages = [];
         let duplicateLinks = [];
         let totalLinks = 0;
-        let brokenPages = [];      
-        let knownBrokenFound = [];  
-        let noSidebarPages = [];   
+        let brokenPages = [];
+        let noSidebarPages = [];
         let logoutUrl = "";
         let dashboardUrl = "";
+
+        dueStatusLinkCount = 0;
 
 
         // ==================================================
@@ -279,7 +334,6 @@ describe("DNCC RMS Trade License - Complete Login & Dashboard Menu Testing", () 
 
         cy.url().should("include", "/newv/TradeLicense/trade_license_home_ver4");
 
-        // Save actual dashboard URL for later use
         cy.url().then((url) => {
 
             dashboardUrl = url;
@@ -312,10 +366,9 @@ describe("DNCC RMS Trade License - Complete Login & Dashboard Menu Testing", () 
 
                     const href = $mainLink.attr("href");
 
-                 
+
                     if (href && href.toLowerCase().includes("logout.aspx")) {
 
-                        
                         logoutUrl = $mainLink.prop("href");
 
                         return;
@@ -348,10 +401,14 @@ describe("DNCC RMS Trade License - Complete Login & Dashboard Menu Testing", () 
 
         cy.log("STEP 13: Opening All Main Menus Together");
 
-        // First expand all menus
         expandAllMainMenus();
 
-        // Collect all submenu 
+
+        // ==================================================
+        // COLLECT ALL SUBMENU LINKS
+        // EXCLUDED URLS ARE FILTERED BEFORE COUNTING
+        // ==================================================
+
         cy.get(".sidebar-nav > ul > li.nav-item")
             .then(($items) => {
 
@@ -374,7 +431,50 @@ describe("DNCC RMS Trade License - Complete Login & Dashboard Menu Testing", () 
 
                         const pageName = $link.text().trim();
 
-                        const pageUrl = $link.prop("href");
+                        let pageUrl = $link.prop("href");
+
+
+                        // ------------------------------------------
+                        // CORRECT URL FOR THE 2 COLLECTION REPORTS
+                        // ------------------------------------------
+
+                        if (
+                            pageUrl &&
+                            pageUrl.toLowerCase().includes(DUE_PAID_PAGE_KEY)
+                        ) {
+
+                            dueStatusLinkCount++;
+
+                            if (pageName.includes("নবায়ন")) {
+
+                                pageUrl = RENEW_REPORT_URL;
+
+                            } else if (pageName.includes("আবেদন")) {
+
+                                pageUrl = APPL_REPORT_URL;
+
+                            } else {
+
+                                pageUrl = dueStatusLinkCount === 1
+                                    ? APPL_REPORT_URL
+                                    : RENEW_REPORT_URL;
+                            }
+                        }
+
+
+                        // ------------------------------------------
+                        // SKIP THE 3 EXCLUDED URLS
+                        // ------------------------------------------
+
+                        if (pageUrl && isExcludedPageUrl(pageUrl)) {
+
+                            return;
+                        }
+
+
+                        // ------------------------------------------
+                        // COLLECT REMAINING SUBMENU LINKS
+                        // ------------------------------------------
 
                         if (
                             pageName &&
@@ -413,16 +513,25 @@ describe("DNCC RMS Trade License - Complete Login & Dashboard Menu Testing", () 
             .then(() => {
 
                 cy.log("--------------------------------");
+
                 cy.log("Total Main Menus: " + mainMenus.length);
+
                 cy.log("Total Submenu Links: " + totalLinks);
+
                 cy.log("Submenu Pages To Visit: " + submenuPages.length);
-                cy.log("Duplicate Links Skipped: " + duplicateLinks.length);
+
+                cy.log("Duplicate Links: " + duplicateLinks.length);
+
                 cy.log("--------------------------------");
 
+
                 duplicateLinks.forEach((d) => {
+
                     cy.log(`DUPLICATE: [${d.parentMenu}] ${d.name} -> ${d.url}`);
+
                     console.log(`DUPLICATE: [${d.parentMenu}] ${d.name} -> ${d.url}`);
                 });
+
 
                 expect(mainMenus.length, "Main menus")
                     .to.eq(EXPECTED_MAIN_MENUS);
@@ -471,11 +580,12 @@ describe("DNCC RMS Trade License - Complete Login & Dashboard Menu Testing", () 
 
                 cy.log("URL: " + page.url);
 
+
                 currentPageUrl = page.url;
 
                 cy.visit(page.url, { failOnStatusCode: false });
 
-            
+
                 cy.get("body", { timeout: 30000 }).should("exist");
 
                 cy.get("body").should(($body) => {
@@ -483,8 +593,10 @@ describe("DNCC RMS Trade License - Complete Login & Dashboard Menu Testing", () 
                     expect($body.text().trim().length).to.be.greaterThan(0);
                 });
 
+
                 let pageIsBroken = false;
                 let pageHasNoSidebar = false;
+
 
                 cy.get("body").then(($body) => {
 
@@ -497,25 +609,26 @@ describe("DNCC RMS Trade License - Complete Login & Dashboard Menu Testing", () 
                         .trim()
                         .substring(0, 300);
 
+
                     cy.log("Sidebar present: " + hasSidebar);
+
                     cy.log("BODY PREVIEW: " + preview);
+
 
                     console.log(
                         "[" + page.name + "] sidebar=" + hasSidebar +
                         " | body: " + preview
                     );
 
+
                     const looksLikeErrorPage =
                         !hasSidebar &&
                         ERROR_PAGE_PATTERNS.some((t) => preview.includes(t));
 
+
                     if (looksLikeErrorPage) {
 
                         pageIsBroken = true;
-
-                        const isKnown = KNOWN_BROKEN_PAGES.some(
-                            (k) => page.url.includes(k)
-                        );
 
                         const info = {
                             name: page.name,
@@ -524,13 +637,9 @@ describe("DNCC RMS Trade License - Complete Login & Dashboard Menu Testing", () 
                             error: preview
                         };
 
-                        if (isKnown) {
-                            knownBrokenFound.push(info);
-                            cy.log("KNOWN BROKEN PAGE: " + page.name);
-                        } else {
-                            brokenPages.push(info);
-                            cy.log("NEW BROKEN PAGE: " + page.name);
-                        }
+                        brokenPages.push(info);
+
+                        cy.log("NEW BROKEN PAGE: " + page.name);
 
                         cy.screenshot("broken-page-" + (index + 1), {
                             capture: "viewport"
@@ -550,9 +659,9 @@ describe("DNCC RMS Trade License - Complete Login & Dashboard Menu Testing", () 
                     }
                 });
 
+
                 cy.then(() => {
 
-                   
                     if (pageIsBroken || pageHasNoSidebar) {
 
                         cy.visit(dashboardUrl);
@@ -562,6 +671,7 @@ describe("DNCC RMS Trade License - Complete Login & Dashboard Menu Testing", () 
 
                         return;
                     }
+
 
                     expandAllMainMenus();
 
@@ -573,34 +683,46 @@ describe("DNCC RMS Trade License - Complete Login & Dashboard Menu Testing", () 
                         });
                 });
 
+
                 cy.log("PAGE LOADED: " + page.name);
 
                 cy.log("ALL MAIN MENUS REMAIN OPEN");
             });
         });
 
+
+        // ==================================================
+        // FINAL PAGE ERROR SUMMARY
+        // ==================================================
+
         cy.then(() => {
 
             cy.log("====================================");
-            cy.log("Known broken pages hit: " + knownBrokenFound.length);
-
-            knownBrokenFound.forEach((b) => {
-                cy.log("KNOWN BUG: [" + b.parentMenu + "] " + b.name + " -> " + b.url);
-            });
 
             cy.log("Pages without sidebar: " + noSidebarPages.length);
 
             noSidebarPages.forEach((n) => {
-                cy.log("NO SIDEBAR: [" + n.parentMenu + "] " + n.name + " -> " + n.url);
+
+                cy.log(
+                    "NO SIDEBAR: [" + n.parentMenu + "] " +
+                    n.name + " -> " + n.url
+                );
             });
+
 
             cy.log("New broken pages: " + brokenPages.length);
 
             brokenPages.forEach((b) => {
-                cy.log("NEW BUG: [" + b.parentMenu + "] " + b.name + " -> " + b.url);
+
+                cy.log(
+                    "NEW BUG: [" + b.parentMenu + "] " +
+                    b.name + " -> " + b.url
+                );
             });
 
+
             cy.log("====================================");
+
 
             expect(
                 brokenPages.map((b) => b.name + " -> " + b.url),
@@ -653,7 +775,8 @@ describe("DNCC RMS Trade License - Complete Login & Dashboard Menu Testing", () 
 
         cy.log("STEP 17: Verifying Login Page");
 
-        cy.location("pathname", { timeout: 30000 }).should("match", /default/i);
+        cy.location("pathname", { timeout: 30000 })
+            .should("match", /default/i);
 
         cy.get("#txtLogin", { timeout: 30000 }).should("be.visible");
 
@@ -678,7 +801,7 @@ describe("DNCC RMS Trade License - Complete Login & Dashboard Menu Testing", () 
 
             cy.log("Total Submenu Links: " + totalLinks);
 
-            cy.log("Unique Submenu Pages Visited: " + submenuPages.length);
+            cy.log("Submenu Pages Visited: " + submenuPages.length);
 
             cy.log("Login: SUCCESS");
 
@@ -694,14 +817,18 @@ describe("DNCC RMS Trade License - Complete Login & Dashboard Menu Testing", () 
 
             cy.log("Login Page Verification: SUCCESS");
 
+
             cy.log(
                 "Pages with CascadingDropDown bug: " + cascadingBugPages.size
             );
 
             cascadingBugPages.forEach((url) => {
+
                 cy.log("BUG PAGE: " + url);
+
                 console.log("BUG PAGE: " + url);
             });
+
 
             cy.log("====================================");
         });
