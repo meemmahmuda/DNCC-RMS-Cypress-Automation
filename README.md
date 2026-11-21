@@ -177,7 +177,7 @@ The full interactive report is available in [`index.html`](cypress/reports/cypre
 
 ## Author
 
-**<Mahmuda>**
+**<Meem Mahmuda>**
 QA / Automation Engineer
 GitHub: [@meemmahmuda](https://github.com/meemmahmuda)
 
