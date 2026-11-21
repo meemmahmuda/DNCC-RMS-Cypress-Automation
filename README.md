@@ -161,7 +161,7 @@ The report includes pass/fail charts, test duration, test code, and embedded scr
 | Login, verify OTP and test all dashboard menus and submenus | Holding Tax | ~5 min 5 sec | Passed |
 | Login, verify OTP and test all dashboard menus and submenus | Trade License | ~50 sec | Passed |
 
-The full interactive report is available in [`index.html`](.reports/cypress/index.html) - download it and open it in a browser.
+The full interactive report is available in [`index.html`](reports/cypress/index.html) - download it and open it in a browser.
 
 ## Notes & Best Practices
 
