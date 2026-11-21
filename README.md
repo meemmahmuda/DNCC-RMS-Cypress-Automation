@@ -143,6 +143,14 @@ cypress/reports/index.html
 
 The report includes pass/fail charts, test duration, test code, and embedded screenshots.
 
+## Report Preview
+
+### Overview
+![Report Overview](cypress/DNCC_RMS_Automation_Test_Report.png)
+
+### Test Details
+![Test Details](cypress/DNCC_RMS_Automation_Test_Report.png)
+
 ## Latest Test Result
 
 | Metric | Value |
