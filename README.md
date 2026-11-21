@@ -31,7 +31,7 @@ Each test logs in through the real login flow (including OTP verification), land
 
 | Spec file | Module | What it verifies |
 |-----------|--------|------------------|
-| `cypress/e2e/dncc_holding_tax.cy.js` | Holding Tax | Login, OTP verification, dashboard load, all main menus and submenus, and page navigation for the **Master**, **Application (আবেদন বিষয়ক)** and **E-Holding (ই-হোল্ডিং বিষয়ক)** menus |
+| `cypress/e2e/dncc_holding_tax.cy.js` | Holding Tax | Login, OTP verification, dashboard load, all main menus and submenus, and page navigation for all menus |
 | `cypress/e2e/dncc_trade_license.cy.js` | Trade License | Login, OTP verification, dashboard load, collects every sidebar link, detects duplicate links, visits **every submenu page**, detects broken/error pages and pages missing the sidebar, takes screenshots of broken pages, logout, and login-page verification |
 
 ### Common flow in both specs
