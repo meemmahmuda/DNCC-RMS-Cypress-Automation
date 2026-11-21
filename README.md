@@ -138,7 +138,7 @@ npx marge cypress/reports/merged.json --reportDir cypress/reports --inline --rep
 Open the generated report in your browser:
 
 ```
-cypress/reports/merged.html   (or index.html, depending on your configuration)
+cypress/reports/index.html
 ```
 
 The report includes pass/fail charts, test duration, test code, and embedded screenshots.
