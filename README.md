@@ -145,9 +145,6 @@ The report includes pass/fail charts, test duration, test code, and embedded scr
 
 ## Report Preview
 
-### Overview
-![Report Overview](cypress/reports/cypress/DNCC_RMS_Automation_Test_Report.png)
-
 ### Test Details
 ![Test Details](cypress/reports/cypress/DNCC_RMS_Automation_Test_Report.png)
 
