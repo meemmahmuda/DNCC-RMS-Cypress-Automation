@@ -174,7 +174,7 @@ The full interactive report is available in [`index.html`](cypress/reports/cypre
 
 **<Your Name>**
 QA / Automation Engineer
-GitHub: [@<your-username>](https://github.com/meemmahmuda)
+GitHub: [@meemmahmuda](https://github.com/meemmahmuda)
 
 ---
 
