@@ -143,19 +143,6 @@ cypress/reports/index.html
 
 The report includes pass/fail charts, test duration, test code, and embedded screenshots.
 
-### Suggested `package.json` scripts
-
-```json
-"scripts": {
-  "test": "cypress run",
-  "test:holding": "cypress run --spec cypress/e2e/dncc_holding_tax.cy.js",
-  "test:trade": "cypress run --spec cypress/e2e/dncc_trade_license.cy.js",
-  "report:merge": "mochawesome-merge \"cypress/reports/.jsons/*.json\" > cypress/reports/merged.json",
-  "report:html": "marge cypress/reports/merged.json --reportDir cypress/reports --inline",
-  "report": "npm run report:merge && npm run report:html"
-}
-```
-
 ## Latest Test Result
 
 | Metric | Value |
