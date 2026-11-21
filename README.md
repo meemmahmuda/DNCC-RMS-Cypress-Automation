@@ -76,7 +76,7 @@ Each test logs in through the real login flow (including OTP verification), land
 └── README.md
 ```
 
-> Adjust this tree to match your actual repository layout.
+
 
 ## Prerequisites
 
