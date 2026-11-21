@@ -96,55 +96,6 @@ cd <DNCC-RMS-Cypress-Automation>
 npm install
 ```
 
-## Configuration
-
-Set the application base URL and test credentials **without committing secrets** to the repository.
-
-**`cypress.config.js`** (example)
-
-```js
-const { defineConfig } = require("cypress");
-
-module.exports = defineConfig({
-  e2e: {
-    baseUrl: "https://<your-rms-environment-url>",
-    defaultCommandTimeout: 10000,
-    pageLoadTimeout: 60000,
-    video: false,
-    screenshotOnRunFailure: true,
-  },
-  reporter: "mochawesome",
-  reporterOptions: {
-    reportDir: "cypress/reports/.jsons",
-    reportPageTitle: "DNCC RMS Automation Test Report",
-    embeddedScreenshots: true,
-    inlineAssets: true,
-    overwrite: false,
-    html: false,
-    json: true,
-  },
-});
-```
-
-**Credentials** - provide them through environment variables or a git-ignored file such as `cypress.env.json`:
-
-```json
-{
-  "username": "<test-username>",
-  "password": "<test-password>",
-  "otp": "<test-otp>"
-}
-```
-
-Add it to `.gitignore`:
-
-```
-cypress.env.json
-node_modules/
-cypress/screenshots/
-cypress/videos/
-```
-
 ## Running the Tests
 
 **Open the Cypress Test Runner (interactive mode)**
