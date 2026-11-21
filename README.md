@@ -89,8 +89,8 @@ Each test logs in through the real login flow (including OTP verification), land
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/<your-username>/<your-repo-name>.git
-cd <your-repo-name>
+git clone https://github.com/meemmahmuda/DNCC-RMS-Cypress-Automation.git
+cd <DNCC-RMS-Cypress-Automation>
 
 # 2. Install dependencies
 npm install
